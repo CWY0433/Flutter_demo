@@ -41,19 +41,15 @@ class _RegisterPageState extends State<RegisterPage> {
                 SizedBox(
                   height: kToolbarHeight,
                 ),
-                buildTitle(),
-                buildTitleLine(),
+                buildTitle(), // 标题
+                buildTitleLine(), // 下划线
                 SizedBox(height: 70.0),
-                buildEmailTextField(),
+                buildEmailTextField(), // 账号
                 SizedBox(height: 30.0),
-                buildPasswordTextField(context),
-                //buildForgetPasswordText(context),
+                buildPasswordTextField(context), // 密码
+                //buildForgetPasswordText(context), // 去登录
                 SizedBox(height: 60.0),
-                buildRegisterButton(context),
-                //SizedBox(height: 30.0),
-                //buildOtherRegisterText(),
-                //buildOtherMethod(context),
-                //buildRegisterText(context),
+                buildRegisterButton(context), // 注册
               ],
             )));
   }
@@ -144,23 +140,6 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  Padding buildForgetPasswordText(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8.0),
-      child: Align(
-        alignment: Alignment.centerRight,
-        child: FlatButton(
-          child: Text(
-            '忘记密码？',
-            style: TextStyle(fontSize: 14.0, color: Colors.grey),
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
-    );
-  }
 
   TextFormField buildPasswordTextField(BuildContext context) {
     return TextFormField(
@@ -189,10 +168,32 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
+  Padding buildForgetPasswordText(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0),
+      child: Align(
+        alignment: Alignment.centerRight,
+        child: FlatButton(
+          child: Text(
+            '去登录',
+            style: TextStyle(fontSize: 14.0, color: Colors.grey),
+          ),
+          onPressed: () {
+            print("去登录");
+            Navigator.pushNamed(context, "loginRoute");
+            //Navigator.pop(context);
+          },
+        ),
+      ),
+    );
+  }
+
+
+
   TextFormField buildEmailTextField() {
     return TextFormField(
       decoration: InputDecoration(
-        labelText: '手机号',
+        labelText: '账号',
       ),
       onSaved: (String value) => _username = value,
     );
@@ -205,7 +206,7 @@ class _RegisterPageState extends State<RegisterPage> {
         alignment: Alignment.bottomLeft,
         child: Container(
           color: Colors.black,
-          width: 40.0,
+          width: 75.0,
           height: 2.0,
         ),
       ),
@@ -233,17 +234,17 @@ class _RegisterPageState extends State<RegisterPage> {
     if(_username.isNotEmpty && _password.isNotEmpty){
       if(await DbUtil.query_by_uername(_username) == ""){
         showSuccess(context, _username + " 注册成功！");
-        await DbUtil.add(_username,_password);
+        await DbUtil.add_user_data(_username,_password);
       } else {
         showError(context, "注册失败，$_username 已存在！");
       }
 
     } else {
-      showError(context, "手机号或密码不能为空");
+      showError(context, "账号或密码不能为空");
     }
   } else {
     showError(context, "注册失败，请重试！");
-    await DbUtil.create_table();
+    await DbUtil.create_user_table();
   }
 
 

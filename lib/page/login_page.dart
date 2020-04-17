@@ -36,14 +36,14 @@ class _LoginPageState extends State<LoginPage> {
                     buildTitle(),
                     buildTitleLine(),
                     SizedBox(height: 70.0),
-                    buildEmailTextField(),
+                    buildEmailTextField(), // 账号
                     SizedBox(height: 30.0),
-                    buildPasswordTextField(context),
-                    buildForgetPasswordText(context),
+                    buildPasswordTextField(context), // 密码
+                    buildForgetPasswordText(context), // 忘记密码
                     SizedBox(height: 60.0),
                     buildLoginButton(context), // 登录按钮
                     SizedBox(height: 30.0),
-                    buildRegisterText(context),
+                    buildRegisterText(context), // 注册
 
                   ],
                 ),
@@ -134,6 +134,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
           onPressed: () {
             print("忘记密码");
+            Navigator.pushNamed(context, "forget_password_pageRoute");
             //Navigator.pop(context);
           },
         ),
@@ -171,7 +172,7 @@ class _LoginPageState extends State<LoginPage> {
   TextFormField buildEmailTextField() {
     return TextFormField(
       decoration: InputDecoration(
-        labelText: '手机号',
+        labelText: '账号',
       ),
       validator: (String value) {
 //        var emailReg = RegExp(
@@ -191,7 +192,7 @@ class _LoginPageState extends State<LoginPage> {
         alignment: Alignment.bottomLeft,
         child: Container(
           color: Colors.black,
-          width: 40.0,
+          width: 75.0,
           height: 2.0,
         ),
       ),
@@ -215,7 +216,7 @@ class _LoginPageState extends State<LoginPage> {
     if(await b){
       showSuccess(context, _email + " 您好！");
     } else {
-      showError(context, "手机号或密码错误");
+      showError(context, "账号或密码错误");
     }
   }
 
@@ -233,7 +234,7 @@ class _LoginPageState extends State<LoginPage> {
        return false;
       }
     } else {
-      await DbUtil.create_table();
+      await DbUtil.create_user_table();
       return false;
     }
   }

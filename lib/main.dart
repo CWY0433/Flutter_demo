@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_cwy/page/chart.dart';
+import 'package:flutter_cwy/page/forget_password_page.dart';
 import 'package:flutter_cwy/page/income.dart';
 import 'package:flutter_cwy/page/login_page.dart';
 import 'package:flutter_cwy/page/register_page.dart';
@@ -16,10 +17,11 @@ class MyApp extends StatelessWidget {
       home: BottomNavigationBarWidget(),
       debugShowCheckedModeBanner: false,// 去除debug标志
       routes: {
-        'loginRoute': (BuildContext context) => new LoginPage(),
-        'register_pageRoute': (BuildContext context) => new RegisterPage(),
-        'income_pageRoute': (BuildContext context) => new InComePage(),
-        'chart_pageRoute': (BuildContext context) => new Chart(),
+        'loginRoute': (BuildContext context) => new LoginPage(), // 登录
+        'register_pageRoute': (BuildContext context) => new RegisterPage(), // 注册
+        'income_pageRoute': (BuildContext context) => new InComePage(), // 收入
+        'chart_pageRoute': (BuildContext context) => new Chart(), // 类型
+        'forget_password_pageRoute': (BuildContext context) => new ForgetPage(), // 忘记密码
       },
     );
   }
