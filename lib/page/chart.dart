@@ -58,11 +58,14 @@ class ChartState extends State<Chart> {
             itemCount: titleItems.length
         ),
       ),
-
     );
   }
 
+/*
 
+
+
+*/
 
 
   Widget buildListData(BuildContext context, String titleItem, String subTitleItem) {

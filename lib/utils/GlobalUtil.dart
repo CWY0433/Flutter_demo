@@ -4,6 +4,9 @@
  */
 
 class GlobalUtil {
+  static bool isLogin = false;
+  static String Login_user_name = "";
+
   static List in_out_data = [
     {'title': '收入', 'value': 1},
     {'title': '支出', 'value': 2},

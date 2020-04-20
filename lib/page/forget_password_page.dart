@@ -167,16 +167,23 @@ class _ForgetPageState extends State<ForgetPage> {
       return;
     }
 
+    if(_password != _password2){
+      showError(context, "两次输入密码不一致");
+      return;
+    }
+
     if( !(await DbUtil.isTabelExits("user_table"))){ // 判断用户表是否存在
       await DbUtil.create_user_table(); // 不存在则创建
     }
 
     if(await DbUtil.query_by_uername(_username) == ""){ //先查询账户是否存在
       showError(context, "修改失败，账户$_username不存在！");
-      await DbUtil.update_password_by_username(_username,_password);
     } else {
-      await DbUtil.update_password_by_username(_username,_password);
-      showSuccess(context, "账户"+_username + "密码修改成功！");
+      if(await DbUtil.update_password_by_username(_username,_password) == 0){
+        showError(context, "修改失败，请重试");
+      } else {
+        showSuccess(context, "账户"+_username + "密码修改成功！");
+      }
     }
 
 

@@ -1,5 +1,5 @@
 /**
- * login page
+ * user page
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_cwy/utils/DbUtil.dart';
@@ -7,12 +7,12 @@ import 'package:flutter_cwy/utils/GlobalUtil.dart';
 import 'package:flutter_cwy/utils/dialog_util.dart';
 
 
-class LoginPage extends StatefulWidget {
+class UserPage extends StatefulWidget {
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _UserPageState createState() => _UserPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _UserPageState extends State<UserPage> {
   final _formKey = GlobalKey<FormState>();
   String _email, _password;
   bool _isObscure = true;
@@ -25,89 +25,49 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-            body: Form(
-                key: _formKey,
-                child: ListView(
-                  padding: EdgeInsets.symmetric(horizontal: 22.0),
-                  children: <Widget>[
-                    SizedBox(
-                      height: kToolbarHeight,
-                    ),
-                    buildTitle(),
-                    buildTitleLine(),
-                    SizedBox(height: 70.0),
-                    buildEmailTextField(), // 账号
-                    SizedBox(height: 30.0),
-                    buildPasswordTextField(context), // 密码
-                    buildForgetPasswordText(context), // 忘记密码
-                    SizedBox(height: 60.0),
-                    buildLoginButton(context), // 登录按钮
-                    SizedBox(height: 30.0),
-                    buildRegisterText(context), // 注册
+      body: Form(
+          key: _formKey,
+          child: ListView(
+            padding: EdgeInsets.symmetric(horizontal: 22.0),
+            children: <Widget>[
+              SizedBox(
+                height: kToolbarHeight,
+              ),
+              buildTitle(),
+              buildTitleLine(),
+              buildUserNameText(context),
+//              SizedBox(height: 70.0),
+//              buildEmailTextField(), // 账号
+//              SizedBox(height: 30.0),
+//              buildPasswordTextField(context), // 密码
+              buildForgetPasswordText(context), // 忘记密码
+//              SizedBox(height: 60.0),
+//              buildLoginButton(context), // 登录按钮
+//              SizedBox(height: 30.0),
+//              buildRegisterText(context), // 注册
 
-                  ],
-                ),
-              onWillPop:(){
-                print("返回键点击了");
-                Navigator.pop(context); // 返回黑屏？
-                //Navigator.of(context).pop();
-                //Navigator.pushNamed(context, "setting_pageRoute");
-              }
-            ),
+            ],
+          ),
+          onWillPop:(){
+            print("返回键点击了");
+            //Navigator.pop(context); // 返回黑屏？
+            Navigator.of(context).pop();
+          }
+      ),
     );
 
   }
 
-
-
-
-  Align buildLoginButton(BuildContext context) {
-    return Align(
-      child: SizedBox(
-        height: 45.0,
-        width: 270.0,
-        child: RaisedButton(
-          child: Text(
-            '登录',
-            style: Theme.of(context).primaryTextTheme.headline,
-          ),
-          color: Colors.black,
-          onPressed: () {
-//            if (_formKey.currentState.validate()) {
-            ///只有输入的内容符合要求通过才会到达此处
-            _formKey.currentState.save();
-            //TODO 执行登录方法
-            print('email:$_email , assword:$_password');
-            _login(context);
-//            }
-          },
-          shape: StadiumBorder(side: BorderSide()),
-        ),
+  Padding buildUserNameText(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 1.0),
+      child:Text(
+        "账户：",
+        style: TextStyle(fontSize: 30.0),
       ),
     );
   }
 
-  Row buildRegisterText(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Text(
-          "没有账号？"
-        ),
-        FlatButton(
-          child: Text(
-            '点击注册',
-            style: TextStyle(fontSize: 14.0, color: Colors.green),
-          ),
-          onPressed: () {
-            print("点击注册");
-            //Navigator.pop(context);
-            Navigator.pushNamed(context, "register_pageRoute");
-          },
-        ),
-      ],
-    );
-  }
 
   Padding buildForgetPasswordText(BuildContext context) {
     return Padding(
@@ -179,7 +139,7 @@ class _LoginPageState extends State<LoginPage> {
         alignment: Alignment.bottomLeft,
         child: Container(
           color: Colors.black,
-          width: 75.0,
+          width: 160.0,
           height: 2.0,
         ),
       ),
@@ -190,20 +150,18 @@ class _LoginPageState extends State<LoginPage> {
     return Padding(
       padding: EdgeInsets.all(8.0),
       child: Text(
-        '登录',
+        '用户信息',
         style: TextStyle(fontSize: 42.0),
       ),
     );
   }
 
   ///用户名和密码登录
-    _login(BuildContext context) async {
+  _login(BuildContext context) async {
     print("登录按钮");
     Future<bool> b = _CheckData(_email,_password);
     if(await b){
       showSuccess(context, _email + " 您好！");
-      GlobalUtil.isLogin = true;
-      GlobalUtil.Login_user_name = _email;
     } else {
       showError(context, "账号或密码错误");
     }
@@ -220,7 +178,7 @@ class _LoginPageState extends State<LoginPage> {
       if(pas == pass){
         return true;
       } else {
-       return false;
+        return false;
       }
     } else {
       await DbUtil.create_user_table();

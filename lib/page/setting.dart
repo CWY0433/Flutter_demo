@@ -1,19 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_cwy/utils/DbUtil.dart';
+import 'package:flutter_cwy/utils/GlobalUtil.dart';
 import 'package:flutter_cwy/utils/dialog_util.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-class Setting extends StatelessWidget{
+class Setting extends StatefulWidget{
+  @override
+  _SettingState createState() => _SettingState();
+}
+
+class _SettingState extends State<Setting> {
+  String userName = '未登录';
+
+
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
+    if(GlobalUtil.isLogin){
+      userName = "您好！" + GlobalUtil.Login_user_name;
+      setState(() {
+
+      });
+    }
     return Scaffold(
       body: SizedBox(
         child: ListView(
 
           scrollDirection: Axis.vertical,
           children: <Widget>[
+            Container(
+              child: ListTile(
+                title: Text(userName),
+                trailing: IconButton(
+                  icon: Icon(Icons.refresh),
+                  onPressed: (){
+                    setState(() {
+                      print("更新设置界面？");
+                    });
+                  },
+                ),
+                //onTap: ()=>click(0,context),
+              ),
+            ),
+
+            Divider(height: 1.0,color: Colors.blue,),
+
             Container(
               child: ListTile(
                 //leading: Icon(Icons.access_time),
@@ -64,10 +97,13 @@ class Setting extends StatelessWidget{
 
   click(int num,BuildContext context) async {
     switch(num){
+      case 0:
+        break;
       case 1:
         print("登录设置");
         //Navigator.pop(context);
         Navigator.pushNamed(context, "loginRoute");
+        //Navigator.pushNamed(context, "user_pageRoute");
         break;
       case 2:
         print("备份与还原");
@@ -77,6 +113,7 @@ class Setting extends StatelessWidget{
         break;
       case 4:
         print("问题反馈");
+        Navigator.pushNamed(context, "question_pageRoute");
         break;
     }
   }

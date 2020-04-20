@@ -65,6 +65,13 @@ class DbUtil{
   }
 
   /*
+  * 创建用户表
+  * */
+  static create_income_table() async { // 创建数据表
+    await _database_user_info.execute(sql_create_user_table); // 创建数据库
+  }
+
+  /*
   * 关闭数据库
   * */
   dbclose() async { // 关闭数据库
@@ -104,7 +111,7 @@ class DbUtil{
     String sql = "UPDATE user_table SET pwd = ? WHERE username = ?";
     int count = await _database_user_info.rawUpdate(sql, [password, username]);
     print(count); // 更新失败返回0
-    print("更新数据成功，请查看");
+    print("更新数据成功");
   }
 
   queryNum() async { // 查询数据的条数

@@ -66,7 +66,7 @@ class _InComePageState extends State<InComePage> {
             padding: EdgeInsets.symmetric(horizontal: 22.0),
             children: <Widget>[
               SizedBox(height: 30.0),
-              myAppBar(context),
+              myAppBar(context), // 收入 支出
               SizedBox(height: 30.0),
               buildMoneyTextField(), // 金额
               SizedBox(height: 30.0),
@@ -93,7 +93,7 @@ class _InComePageState extends State<InComePage> {
   Row categoryAndAccountRow() {
     // 类型和账户
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround, // 中间留空 两边占满
+      mainAxisAlignment: MainAxisAlignment.spaceBetween, // 中间留空 两边占满
       children: <Widget>[
         Row(
           children: <Widget>[
@@ -103,9 +103,14 @@ class _InComePageState extends State<InComePage> {
               //width: 100.0,
               child: buildCategory(),
             ),
-            Icon(
-              Icons.settings,
-              size: 20,
+            IconButton(
+              icon:Icon(
+                Icons.settings,
+                size: 20,
+              ),
+              onPressed: (){
+                Navigator.pushNamed(context, "chart_pageRoute");
+              },
             ),
           ],
         ),
@@ -273,8 +278,9 @@ class _InComePageState extends State<InComePage> {
       onPressed: () {
         Fluttertoast.showToast(
             msg: "保存成功 "
-                +"金额: " + moneyTextController.text
-                + "时间: " + typeDate
+                +"类型: " + typeName
+                +" 金额: " + moneyTextController.text
+                + " 时间: " + typeDate
                 + " 备注: " + remarkTextController.text
                 + " 类别: " + typeCategory
                 + " 账户: " + typeAccount,
