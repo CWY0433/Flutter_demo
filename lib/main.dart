@@ -8,6 +8,7 @@ import 'package:flutter_cwy/page/register_page.dart';
 import 'package:flutter_cwy/page/setting.dart';
 import 'package:flutter_cwy/page/user_page.dart';
 import 'BottomNaivgationWidget.dart';
+import 'page/add_account.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -26,8 +27,9 @@ class MyApp extends StatelessWidget {
         'chart_pageRoute': (BuildContext context) => new Chart(), // 类型
         'forget_password_pageRoute': (BuildContext context) => new ForgetPage(), // 忘记密码
         'user_pageRoute': (BuildContext context) => new UserPage(), // 用户
-        'setting_pageRoute': (BuildContext context) => new Setting(), // 用户
+        'setting_pageRoute': (BuildContext context) => new Setting(), // 设置
         'question_pageRoute': (BuildContext context) => new QuestionPage(), // 问题反馈界面
+        'add_account_pageRoute': (BuildContext context) => new AddAccountPage(), // 问题反馈界面
       },
     );
   }

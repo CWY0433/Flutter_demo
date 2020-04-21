@@ -32,6 +32,43 @@ void showResult(BuildContext context, String title, String message) {
   );
 }
 
+///显示操作结果的提示框
+bool showResult2(BuildContext context, String title, String message) {
+  showDialog<Null>(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return new AlertDialog(
+        title: new Text(title),
+        content: new SingleChildScrollView(
+          child: new ListBody(
+            children: <Widget>[
+              new Text(message),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          new FlatButton(
+            child: new Text('取消'),
+            onPressed: () {
+              Navigator.of(context).pop();
+              return false;
+            },
+          ),
+          new FlatButton(
+            child: new Text('确定'),
+            onPressed: () {
+              Navigator.of(context).pop();
+              return true;
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+
 ///显示操作成功的提示框
 void showSuccess(BuildContext context,String message){
   showResult(context, "成功", message);

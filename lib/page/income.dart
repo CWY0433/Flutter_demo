@@ -52,6 +52,7 @@ class _InComePageState extends State<InComePage> {
   void initState() {
     remarkTextController.text = null;
     moneyTextController.text = null;
+    _initData();
   }
 
 
@@ -109,7 +110,7 @@ class _InComePageState extends State<InComePage> {
                 size: 20,
               ),
               onPressed: (){
-                Navigator.pushNamed(context, "chart_pageRoute");
+                //Navigator.pushNamed(context, "chart_pageRoute");
               },
             ),
           ],
@@ -136,6 +137,23 @@ class _InComePageState extends State<InComePage> {
   }
 
 
+  void _initData() async{
+    if(!(await DbUtil.isTabelExits("account_table"))){
+      print("account_table表不存在！！");
+      await DbUtil.create_account_table();
+    }
+
+    //GlobalUtil.test_data.clear();
+    int len = GlobalUtil.chart_data.length;
+    for(int i = 1;i <= len;i++){
+      String _data = await DbUtil.query_by_id_name(i);
+      GlobalUtil.chart_data.add(_data);
+      String _money = await DbUtil.query_by_id_accountmoney(i);
+      GlobalUtil.chart_money.add(_money);
+
+      GlobalUtil.test_data[i-1]["title"] = _data;
+    }
+  }
 
   Row myAppBar(BuildContext context) {
     return Row(

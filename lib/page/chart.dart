@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
-
-
-
-/*
- * @Author: Olive^_^Lan
- * @Date: 2019-01-29 15:18:29
- * @Last Modified by: Olive^_^Lan
- * @Last Modified time: 2019-01-29 17:05:32
- */
 import 'package:flutter/material.dart';
+import 'package:flutter_cwy/utils/DbUtil.dart';
+import 'package:flutter_cwy/utils/GlobalUtil.dart';
+import 'package:flutter_cwy/utils/dialog_util.dart';
 
 class Chart extends StatefulWidget {
   @override
   createState() => new ChartState();
+
+}
+
+
+enum Action {
+  Ok,
+  Cancel
 }
 
 class ChartState extends State<Chart> {
@@ -37,6 +38,16 @@ class ChartState extends State<Chart> {
     'subTitle: weekend', 'subTitle: web',
     'subTitle: accessible', 'subTitle: ac_unit',
   ];
+  List items = GlobalUtil.chart_data;
+  List itemsmoney = GlobalUtil.chart_money;
+  int delindex = 0;
+  String delinfo = "";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,14 +60,66 @@ class ChartState extends State<Chart> {
     var divideTiles = ListTile.divideTiles(context: context, tiles: _list).toList();
 
     return Scaffold(
-      body: Scrollbar(
-        child: ListView.separated(
-            itemBuilder: (context, item) {
-              return buildListData(context, titleItems[item], subTitleItems[item]);
-            },
-            separatorBuilder: (BuildContext context, int index) => new Divider(),
-            itemCount: titleItems.length
-        ),
+      body: Column(
+        children: <Widget>[
+          SizedBox(height: 30.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center, // 中间留空 两边占满
+            children: <Widget>[
+              RaisedButton(
+                child: Text("添加+"),
+                onPressed: (){
+                  setState(() {
+                    print("进入set1");
+                    Navigator.pushNamed(context, "add_account_pageRoute");
+                  });
+                  print("账户--添加按钮");
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.refresh),
+                onPressed: (){
+                  _getDBaccountData();
+                  setState(() {
+                    print("刷新");
+                  });
+                },
+              ),
+            ],
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: items.length,
+              itemBuilder: (context, index) {
+                var item = items[index];
+                return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        print("进入set2");
+                        GlobalUtil.Chart_flag = true;
+                        GlobalUtil.Chart_name = items[index];
+                        GlobalUtil.Chart_money = itemsmoney[index];
+                        Navigator.pushNamed(context, "add_account_pageRoute");
+                      });
+                      print("点击了$index 列表长度");
+                      print(item.length);
+                      print(items.length);
+                    },
+                    onLongPress: (){
+                      print("长按了$index");
+                      delindex = index;
+                      delinfo = items[index];
+                      _openAlertDialog();
+                    },
+                    child: ListTile(
+                      title: Text(items[index]),
+                      subtitle: Text(itemsmoney[index]),
+                    )
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -66,6 +129,78 @@ class ChartState extends State<Chart> {
 
 
 */
+
+
+  String _choice = 'Nothing';
+  Future _openAlertDialog() async {
+    final action = await showDialog(
+      context: context,
+      barrierDismissible: false,//// user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('提示'),
+          content: Text('是否删除 $delinfo ?'),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('取消'),
+              onPressed: () {
+                Navigator.pop(context, Action.Cancel);
+              },
+            ),
+            FlatButton(
+              child: Text('确认'),
+              onPressed: () {
+                _deleteData();
+                Navigator.pop(context, Action.Ok);
+
+              },
+            ),
+          ],
+        );
+      },
+    );
+
+    switch (action) {
+      case Action.Ok:
+        setState(() {
+          items.removeAt(delindex);
+          itemsmoney.removeAt(delindex);
+          _choice = 'Ok';
+        });
+        break;
+      case Action.Cancel:
+        setState(() {
+          _choice = 'Cancel';
+        });
+        break;
+      default:
+    }
+  }
+
+  void _deleteData() async{
+    await DbUtil.delete_user_by_account_name(items[delindex]);
+  }
+
+  void _getDBaccountData() async{
+    if(!(await DbUtil.isTabelExits("account_table"))){
+      print("account_table表不存在！！");
+      await DbUtil.create_account_table();
+    }
+    int count = await DbUtil.queryNumByName("account_table");
+    print("数据总数是：$count");
+    if(count != 0){
+      items.clear();
+      GlobalUtil.chart_data.clear();
+      GlobalUtil.chart_money.clear();
+      for(int i = 1;i <= count;i++){
+        String _data = await DbUtil.query_by_id_name(i);
+        GlobalUtil.chart_data.add(_data);
+        String _money = await DbUtil.query_by_id_accountmoney(i);
+        GlobalUtil.chart_money.add(_money);
+      }
+    }
+  }
+
 
 
   Widget buildListData(BuildContext context, String titleItem, String subTitleItem) {

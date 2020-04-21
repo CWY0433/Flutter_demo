@@ -1,6 +1,7 @@
 
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_cwy/utils/GlobalUtil.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -91,6 +92,118 @@ class DbUtil{
     });
   }
 
+
+  /*
+  * 创建账户信息表
+  * */
+  static create_account_table() async {
+    String sql_create_account_table = 'CREATE TABLE account_table (id INTEGER PRIMARY KEY , accountname TEXT ,accountmoney Text)';
+    await _database_user_info.execute(sql_create_account_table);
+  }
+
+  /*
+  * 添加账户数据
+  * */
+  static add_account_data(String accountname,String accountmoney) async { // 向表内插入数据
+    print("存入数据"+accountname + "" + accountmoney);
+    String sql = "INSERT INTO account_table(accountname,accountmoney) VALUES('$accountname','$accountmoney')";
+    await _database_user_info.transaction((txn) async {
+      int id = await txn.rawInsert(sql);
+      print("返回数据的id：");
+      print(id);
+    });
+  }
+
+
+  /*
+  *更新账户信息
+  * */
+  static Future<int> update_account_by_id(int id,String accountname,String accountmoney) async {
+    String sql = "UPDATE account_table SET accountname = ? , accountmoney = ? WHERE id = ?";
+    int count = await _database_user_info.rawUpdate(sql, [accountname,accountmoney, id]);
+    print("保存返回值：$count"); // 更新失败返回0
+    return count;
+  }
+
+  /*
+  *查询账户是否存在
+  * */
+  static query_by_account_name(String name) async{
+    String sql = "SELECT * FROM account_table where accountname = ?";
+    List<Map> list = await _database_user_info.rawQuery(sql,[name]);
+    print("数据详情：$list");
+    if(list.length == 0){
+      print("$name 不存在");
+      return "";
+    } else {
+      print("$name 对应的密码为：");
+      print(list.toString());
+      print(list[0]["id"]);
+      return(list[0]["id"]);
+    }
+  }
+
+  /*
+  *查询所有的账户数据
+  * */
+  static Future<List<Map>> query_all_account() async{
+    String sql2 = "SELECT * FROM account_table";
+    List<Map> list = await _database_user_info.rawQuery(sql2);
+    print("account_table数据详情：$list");
+    GlobalUtil.chart_data = list;
+    return list;
+  }
+
+  /*
+  *查询 账户名 by id
+  * */
+  static Future<String> query_by_id_name(int id) async{
+    String sql = "SELECT * FROM account_table where id = ?";
+    List<Map> list = await _database_user_info.rawQuery(sql,[id]);
+    print("数据详情：$list");
+    if(list.length == 0){
+      print("不存在");
+      return "";
+    } else {
+      print("id:$id对应accountname为：");
+      print(list[0]["accountname"]);
+      return(list[0]["accountname"]);
+    }
+  }
+
+  /*
+  *查询 金额 by id
+  * */
+  static Future<String> query_by_id_accountmoney(int id) async{
+    String sql = "SELECT * FROM account_table where id = ?";
+    List<Map> list = await _database_user_info.rawQuery(sql,[id]);
+    print("数据详情：$list");
+    if(list.length == 0){
+      print("不存在");
+      return "";
+    } else {
+      print("id:$id对应accountmoney为：");
+      print(list[0]["accountmoney"]);
+      return(list[0]["accountmoney"]);
+    }
+  }
+
+  /*
+  * 删除数据
+  * */
+  static delete_user_by_account_name(String accountname) async { // 删除数据
+    String sql = "DELETE FROM account_table WHERE accountname = ?";
+    int count = await _database_user_info.rawDelete(sql, [accountname]); // 删除id=1的数据
+    if (count == 1) {
+      print("删除成功，请查看");
+    } else {
+      print("删除失败，请看log");
+    }
+  }
+
+
+
+
   /*
   * 删除数据
   * */
@@ -120,12 +233,25 @@ class DbUtil{
     print("数据条数：$count");
   }
 
+  /*
+  *查询表数据的总数
+  * */
+  static Future<int> queryNumByName(String user_table) async { // 查询数据的条数
+    String sql_query_count2 = 'SELECT COUNT(*) FROM $user_table'; // 查询表中的数据多少
+    int count = Sqflite.firstIntValue(await _database_user_info.rawQuery(sql_query_count2));
+    print("数据条数：$count");
+    return count;
+  }
+
   query() async { // 查询所有数据
     String sql = "SELECT * FROM user_table";
     List<Map> list = await _database_user_info.rawQuery(sql);
     print("数据详情：$list");
   }
 
+  /*
+  *查询用户是否存在
+  * */
   static Future<String> query_by_uername(String username) async { // 查询数据条数
 
     String sql = "SELECT * FROM user_table where username = ?";

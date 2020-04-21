@@ -215,6 +215,11 @@ class _LoginPageState extends State<LoginPage> {
     //DbUtil().query();
     //DbUtil().dbclose();
 
+    if(!(await DbUtil.isTabelExits("user_table"))){
+      print("user_table表不存在！！");
+      await DbUtil.create_user_table();
+    }
+
     if(await DbUtil.isTabelExits("user_table") != null){
       String pas = await DbUtil.query_by_uername(usr);
       if(pas == pass){
